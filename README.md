@@ -2,6 +2,8 @@
 
 A real-time electricity spot price visualization application for Danisk (DK2 price area), built with FastAPI and Chart.js. Displays current and historical spot prices with green energy metrics.
 
+<img src="Screenshot.png" alt="Elpriser Screenshot" width="400">
+
 ## Quick Start
 
 ### Prerequisites
