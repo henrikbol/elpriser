@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spotpriser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/static/table.css">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+</head>
+
+<body>
+    <canvas id="spot_prices" width="60" height="40"></canvas>
+    <canvas id="now_pie" width="60" height="40"></canvas>
+    <script>
+        const CHART_COLORS = {
+            red: 'rgba(255, 99, 132, 1)',
+            orange: 'rgba(255, 159, 64, 1)',
+            yellow: 'rgba(255, 205, 86, 1)',
+            green: 'rgba(75, 192, 192, 1)',
+            blue: 'rgba(54, 162, 235, 1)',
+            purple: 'rgba(153, 102, 255, 1)',
+            grey: 'rgba(201, 203, 207, 1)'
+        }
+        const BACKGROUND_COLORS = {
+            red: 'rgba(255, 99, 132, 0.8)',
+            orange: 'rgba(255, 159, 64, 0.8)',
+            yellow: 'rgba(255, 205, 86, 0.8)',
+            green: 'rgba(75, 192, 192, 0.8)',
+            blue: 'rgba(54, 162, 235, 0.8)',
+            purple: 'rgba(153, 102, 255, 0.8)',
+            grey: 'rgba(201, 203, 207, 0.8)'
+        }
+        const barData = {
+            data: {
+                labels: {{ spot_labels | safe}},
+                datasets: [{
+                    type: 'bar',
+                    data: {{ spot_values | safe}},
+                    backgroundColor: color => {
+                        let colors = color.index != {{ now_index | safe }} ? BACKGROUND_COLORS.blue : BACKGROUND_COLORS.red;
+                        return colors
+                    },
+                    borderColor: color => {
+                        let colors = color.index != {{ now_index | safe }} ? BACKGROUND_COLORS.blue : BACKGROUND_COLORS.red;
+                        return colors
+                    },
+                    label: 'SpotPrice'
+                },{
+                    type: 'line',
+                    data: {{ spot_values_rolling | safe}},
+                    label: 'Rolling24'
+                }],
+            },    
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },  
+                    title: {
+                        display: true,
+                        text: ["{{ spot_title }}","{{ spot_title2 }}"],
+                        font: {
+                            size: 18
+                        }
+                    }
+                },
+                scales: {
+                x: {
+                    grid: {
+                       display: false,
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'index'
+                }
+            }
+        }
+        var ctx = document.getElementById("spot_prices").getContext("2d");
+        spotChart = new Chart(ctx, barData);
+
+        const nowData = {
+            type: 'doughnut',
+            data: {
+                labels: {{ now_labels | safe}},
+                datasets: [{
+                    data: {{ now_values | safe}},
+                    backgroundColor: [BACKGROUND_COLORS.blue, BACKGROUND_COLORS.red,BACKGROUND_COLORS.green,BACKGROUND_COLORS.yellow,BACKGROUND_COLORS.purple,]
+                }],
+            },    
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "{{ now_title }}",
+                        font: {
+                            size: 18
+                        }
+                    }
+                },rotation: -90,
+    circumference: 180,
+            }
+        }
+        var ctx_pie = document.getElementById("now_pie").getContext("2d");
+        pieChart = new Chart(ctx_pie, nowData);
+
+
+
+    </script>
+
+</body>
+
+</html>

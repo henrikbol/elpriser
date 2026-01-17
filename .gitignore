@@ -1,0 +1,17 @@
+.ipynb_checkpoints
+.DS_Store
+*.pkl
+*.ipynb
+
+# UV virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# mypy
+.mypy_cache/
